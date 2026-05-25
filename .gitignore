@@ -1,0 +1,138 @@
+# ════════════════════════════════════════════════════
+#  MindGuard AI — .gitignore
+#  Keeps secrets safe & repo clean
+# ════════════════════════════════════════════════════
+
+# ─── SECURITY: NEVER commit these ───────────────────
+backend/.env
+.env
+.env.*
+*.env
+!.env.example          # allow example template only
+**/secrets.*
+**/credentials.*
+
+# ─── Python ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+*.manifest
+*.spec
+
+# ─── Virtual Environment ─────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ─── Database / Data files ───────────────────────────
+backend/data/
+*.db
+*.sqlite
+*.sqlite3
+
+# ─── HuggingFace model cache (HUGE — up to 20GB) ────
+.cache/
+**/.cache/huggingface/
+**/hub/
+
+# ─── Node / React Native / Expo ─────────────────────
+frontend/node_modules/
+node_modules/
+frontend/.expo/
+frontend/.expo-shared/
+frontend/dist/
+frontend/web-build/
+frontend/.next/
+.expo/
+
+# ─── Expo / React Native build artifacts ─────────────
+frontend/android/
+frontend/ios/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# ─── Package lock files (optional — uncomment if needed)
+# package-lock.json
+# yarn.lock
+
+# ─── Logs ────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ─── OS files ────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ─── IDEs & Editors ──────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+.history/
+
+# ─── Docker (keep Dockerfile, ignore runtime files) ──
+docker-compose.override.yml
+.docker/
+
+# ─── Testing & Coverage ──────────────────────────────
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+nosetests.xml
+test-results/
+
+# ─── Temporary / Misc ────────────────────────────────
+*.tmp
+*.bak
+*.backup
+*.orig
+*.rej
+.temp/
+tmp/
+
+# ─── Personal / Private documents ────────────────────
+*.docx
+*.doc
+*.pdf
+Likitha*

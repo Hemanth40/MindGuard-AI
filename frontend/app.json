@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "MindGuard AI",
+    "slug": "mindguard-ai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#080B18",
+    "splash": {
+      "backgroundColor": "#080B18"
+    },
+    "platforms": ["ios", "android", "web"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mindguard.ai"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#080B18",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "package": "com.mindguard.ai"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    }
+  }
+}
