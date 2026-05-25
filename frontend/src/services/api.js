@@ -15,10 +15,11 @@ import Constants from 'expo-constants';
 //   • Android emulator → 10.0.2.2:8000
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ✅ Set this to your Render backend URL after deploying
+// ✅ Live Render backend — accessible from anywhere worldwide
 const RENDER_URL = 'https://mindguard-ai-backend.onrender.com';
 
-// Set to true to always use Render (recommended for Expo Go on real devices)
+// true = always use Render (Expo Go on any network anywhere)
+// false = use local PC IP (only works on same WiFi)
 const USE_RENDER = true;
 
 function getBaseURL() {
