@@ -10,7 +10,11 @@
     "splash": {
       "backgroundColor": "#080B18"
     },
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mindguard.ai"
@@ -25,6 +29,9 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
