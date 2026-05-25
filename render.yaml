@@ -8,14 +8,15 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
+    pythonVersion: "3.11.9"
     envVars:
       - key: GEMINI_API_KEY
-        sync: false          # Set manually in Render dashboard
+        sync: false
       - key: HF_API_KEY
-        sync: false          # Set manually in Render dashboard
+        sync: false
       - key: SECRET_KEY
-        sync: false          # Set manually in Render dashboard
+        sync: false
       - key: DATABASE_URL
-        sync: false          # Paste your existing PostgreSQL Internal URL
+        sync: false
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "1440"
