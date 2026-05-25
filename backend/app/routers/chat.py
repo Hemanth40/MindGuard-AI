@@ -92,6 +92,7 @@ def get_gemini_response(user_message: str, context_block: str, history: list) ->
     gemini_history = build_gemini_history(history)
     full_message = f"{context_block}\n{user_message}" if context_block else user_message
 
+    errors = []
     for model_name in ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']:
         try:
             logger.info(f"Calling {model_name}...")
@@ -101,11 +102,13 @@ def get_gemini_response(user_message: str, context_block: str, history: list) ->
             logger.info(f"Success with {model_name}")
             return response.text
         except Exception as e:
-            logger.warning(f"{model_name} failed: {type(e).__name__}: {str(e)[:200]}")
+            err_msg = f"{model_name} failed: {type(e).__name__}: {str(e)[:120]}"
+            logger.warning(err_msg)
+            errors.append(err_msg)
             continue
 
-    logger.error("All models failed")
-    return "I'm having trouble reaching the AI right now. Please try again in a moment. 💙"
+    logger.error("All models failed: " + "; ".join(errors))
+    return f"I'm having trouble reaching the AI. (Error: {errors[-1] if errors else 'Unknown'}) 💙"
 
 
 def build_context_block(user: User, latest_mood: MoodEntry | None) -> str:
