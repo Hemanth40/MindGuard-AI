@@ -92,7 +92,7 @@ def get_gemini_response(user_message: str, context_block: str, history: list) ->
     gemini_history = build_gemini_history(history)
     full_message = f"{context_block}\n{user_message}" if context_block else user_message
 
-    for model_name in ['gemini-2.5-flash', 'gemini-2.0-flash']:
+    for model_name in ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']:
         try:
             logger.info(f"Calling {model_name}...")
             model = genai.GenerativeModel(model_name, system_instruction=SYSTEM_PROMPT)
