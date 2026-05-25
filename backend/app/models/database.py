@@ -13,8 +13,14 @@ if settings.DATABASE_URL.startswith("sqlite"):
         connect_args={"check_same_thread": False}
     )
 else:
-    # PostgreSQL on Render — no check_same_thread needed
-    engine = create_engine(settings.DATABASE_URL)
+    # PostgreSQL (Render / Neon / any cloud provider)
+    # Fix: SQLAlchemy requires "postgresql://" not "postgres://"
+    db_url = settings.DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    engine = create_engine(
+        db_url,
+        pool_pre_ping=True,        # auto-reconnect on lost connections
+        pool_recycle=300,          # recycle connections every 5 min (Neon serverless)
+    )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
