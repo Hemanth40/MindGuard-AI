@@ -446,9 +446,25 @@ const styles = StyleSheet.create({
   submitText: { color: '#fff', fontSize: 16, fontWeight: '800' },
 
   // Modal
-  modalBg: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  modalContainer: { width: '100%', maxWidth: 420, borderRadius: 28, overflow: 'hidden' },
-  modalCard: { padding: 24 },
+  modalBg: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'rgba(5, 7, 16, 0.85)', // Deep space dimming backdrop
+  },
+  modalContainer: {
+    width: '100%',
+    maxWidth: 420,
+    borderRadius: 28,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  modalCard: {
+    padding: 24,
+    backgroundColor: '#0D1226', // Solid dark space background to prevent overlap
+  },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   modalSub: { fontSize: 10, fontWeight: '700', color: colors.primaryLight, letterSpacing: 2 },
   closeBtn: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
