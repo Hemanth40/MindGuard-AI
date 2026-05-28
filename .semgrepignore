@@ -1,0 +1,10 @@
+# Exclude third-party dependencies and build files from root security scanning
+node_modules/
+backend/.venv/
+backend/app/data/
+frontend/node_modules/
+frontend/dist/
+frontend/.expo/
+.git/
+*.lock
+package-lock.json

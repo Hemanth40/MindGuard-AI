@@ -1,0 +1,7 @@
+# Exclude third-party dependencies from security scanning
+node_modules/
+dist/
+.expo/
+web-build/
+*.lock
+package-lock.json
