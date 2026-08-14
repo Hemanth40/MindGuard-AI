@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Text, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Text, ForeignKey, Index
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -32,7 +32,7 @@ class User(Base):
     username        = Column(String, unique=True, index=True)
     email           = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    created_at      = Column(DateTime, default=datetime.utcnow)
+    created_at      = Column(DateTime, default=datetime.utcnow, index=True)
     mood_entries    = relationship("MoodEntry",  back_populates="user")
     chat_messages   = relationship("ChatMessage", back_populates="user")
 
@@ -40,7 +40,7 @@ class User(Base):
 class MoodEntry(Base):
     __tablename__ = "mood_entries"
     id                 = Column(Integer, primary_key=True, index=True)
-    user_id            = Column(Integer, ForeignKey("users.id"))
+    user_id            = Column(Integer, ForeignKey("users.id"), index=True)
     mood_score         = Column(Float)
     sleep_hours        = Column(Float)
     anxiety_level      = Column(String)
@@ -49,19 +49,28 @@ class MoodEntry(Base):
     stress_level       = Column(String, default="")
     stress_confidence  = Column(Float,  default=0.0)
     stress_explanation = Column(Text,   default="")
-    created_at         = Column(DateTime, default=datetime.utcnow)
+    created_at         = Column(DateTime, default=datetime.utcnow, index=True)
     user               = relationship("User", back_populates="mood_entries")
+
+    __table_args__ = (
+        Index("ix_mood_entries_user_created", "user_id", "created_at"),
+    )
 
 
 class ChatMessage(Base):
     __tablename__ = "chat_messages"
     id             = Column(Integer, primary_key=True, index=True)
-    user_id        = Column(Integer, ForeignKey("users.id"))
+    user_id        = Column(Integer, ForeignKey("users.id"), index=True)
     user_message   = Column(Text)
     ai_response    = Column(Text)
     stress_context = Column(String, default="")
-    created_at     = Column(DateTime, default=datetime.utcnow)
+    created_at     = Column(DateTime, default=datetime.utcnow, index=True)
     user           = relationship("User", back_populates="chat_messages")
+
+    __table_args__ = (
+        Index("ix_chat_messages_user_created", "user_id", "created_at"),
+    )
+
 
 
 def get_db():
@@ -74,3 +83,10 @@ def get_db():
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+    # Ensure indexes are created even on existing pre-created tables
+    for table in Base.metadata.tables.values():
+        for index in table.indexes:
+            try:
+                index.create(bind=engine, checkfirst=True)
+            except Exception:
+                pass

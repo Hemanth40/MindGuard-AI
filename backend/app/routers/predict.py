@@ -7,9 +7,9 @@ from app.models.database import User
 router = APIRouter(prefix="/api/predict", tags=["predict"])
 
 @router.post("", response_model=PredictResponse)
-def predict_stress(request: PredictRequest, current_user: User = Depends(get_current_user)):
+async def predict_stress(request: PredictRequest, current_user: User = Depends(get_current_user)):
     predictor = get_predictor()
-    result = predictor.predict(
+    result = await predictor.predict_async(
         text=request.journal_text or "",
         mood_score=request.mood_score,
         sleep_hours=request.sleep_hours,

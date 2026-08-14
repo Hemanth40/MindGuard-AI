@@ -11,11 +11,11 @@ from typing import List, Optional
 router = APIRouter(prefix="/api/mood", tags=["mood"])
 
 @router.post("", response_model=MoodOut)
-def create_mood_entry(mood_data: MoodCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def create_mood_entry(mood_data: MoodCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     # Run stress prediction
     predictor = get_predictor()
     text = mood_data.journal_text or f"I feel {mood_data.anxiety_level} anxiety, mood is {mood_data.mood_score}/10."
-    prediction = predictor.predict(text, mood_data.mood_score, mood_data.sleep_hours, mood_data.anxiety_level, mood_data.activity_level)
+    prediction = await predictor.predict_async(text, mood_data.mood_score, mood_data.sleep_hours, mood_data.anxiety_level, mood_data.activity_level)
     
     entry = MoodEntry(
         user_id=current_user.id,
@@ -39,7 +39,7 @@ def get_today_mood(db: Session = Depends(get_db), current_user: User = Depends(g
     entry = db.query(MoodEntry).filter(
         MoodEntry.user_id == current_user.id,
         MoodEntry.created_at >= datetime.combine(today, datetime.min.time())
-    ).first()
+    ).order_by(MoodEntry.created_at.desc()).first()
     return entry
 
 @router.get("/recent", response_model=List[MoodOut])

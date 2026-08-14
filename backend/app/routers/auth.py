@@ -25,7 +25,7 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     db.refresh(user)
 
     token = create_access_token({"sub": str(user.id), "email": user.email})
-    return Token(access_token=token, token_type="bearer", user=UserOut.from_orm(user))
+    return Token(access_token=token, token_type="bearer", user=UserOut.model_validate(user))
 
 
 @router.post("/login", response_model=Token)
@@ -35,7 +35,7 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token({"sub": str(user.id), "email": user.email})
-    return Token(access_token=token, token_type="bearer", user=UserOut.from_orm(user))
+    return Token(access_token=token, token_type="bearer", user=UserOut.model_validate(user))
 
 
 @router.get("/me", response_model=UserOut)

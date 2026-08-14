@@ -168,8 +168,10 @@ def build_context_block(user: User, latest_mood: MoodEntry | None) -> str:
         )
 
 
+import asyncio
+
 @router.post("", response_model=ChatResponse)
-def send_chat(
+async def send_chat(
     request: ChatRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -186,7 +188,7 @@ def send_chat(
     ).order_by(MoodEntry.created_at.desc()).first()
 
     context_block = build_context_block(current_user, latest_mood)
-    ai_response = get_gemini_response(request.message, context_block, history)
+    ai_response = await asyncio.to_thread(get_gemini_response, request.message, context_block, history)
 
     # Save to DB
     db.add(ChatMessage(

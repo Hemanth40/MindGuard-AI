@@ -33,10 +33,10 @@ def get_stats(db: Session = Depends(get_db), current_user: User = Depends(get_cu
     avg_mood = sum(e.mood_score for e in entries) / len(entries)
     stress_counts = Counter(e.stress_level for e in entries if e.stress_level)
     
-    # Calculate streak
+    # Calculate streak (preserves active streak from yesterday until today is completed)
     streak = 0
-    current_date = date.today()
     entry_dates = set(e.created_at.date() for e in entries)
+    current_date = date.today() if date.today() in entry_dates else (date.today() - timedelta(days=1))
     while current_date in entry_dates:
         streak += 1
         current_date -= timedelta(days=1)
