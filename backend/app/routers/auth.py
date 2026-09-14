@@ -1,11 +1,39 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.models.database import get_db, User
-from app.schemas.schemas import UserCreate, UserLogin, Token, UserOut
+from app.schemas.schemas import UserCreate, UserLogin, Token, UserOut, QuickStartRequest
 from app.core.security import get_password_hash, verify_password, create_access_token
 from app.routers.deps import get_current_user
+import re
+import uuid
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+
+
+@router.post("/quick-start", response_model=Token)
+def quick_start(data: QuickStartRequest, db: Session = Depends(get_db)):
+    clean_name = data.name.strip()
+    if not clean_name:
+        raise HTTPException(status_code=400, detail="Name cannot be empty")
+
+    user = db.query(User).filter(User.username.ilike(clean_name)).first()
+    if not user:
+        slug = re.sub(r'[^a-zA-Z0-9_]', '', clean_name.lower()) or "user"
+        email = f"{slug}@mindguard.app"
+        if db.query(User).filter(User.email == email).first():
+            email = f"{slug}_{uuid.uuid4().hex[:6]}@mindguard.app"
+
+        user = User(
+            username=clean_name,
+            email=email,
+            hashed_password=get_password_hash("mindguard_secure_pass")
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    token = create_access_token({"sub": str(user.id), "email": user.email})
+    return Token(access_token=token, token_type="bearer", user=UserOut.model_validate(user))
 
 
 @router.post("/register", response_model=Token)

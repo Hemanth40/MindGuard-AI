@@ -91,9 +91,10 @@ api.interceptors.response.use(
 
 // ── Auth ──
 export const authAPI = {
-  register: (data) => api.post('/api/auth/register', data),
-  login:    (data) => api.post('/api/auth/login', data),
-  me:       ()     => api.get('/api/auth/me'),
+  quickStart: (data) => api.post('/api/auth/quick-start', data),
+  register:   (data) => api.post('/api/auth/register', data),
+  login:      (data) => api.post('/api/auth/login', data),
+  me:         ()     => api.get('/api/auth/me'),
 };
 
 // ── Mood ──

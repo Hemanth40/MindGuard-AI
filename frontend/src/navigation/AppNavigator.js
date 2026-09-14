@@ -20,8 +20,7 @@ import ChatScreen from '../screens/ChatScreen';
 import MeditationScreen from '../screens/MeditationScreen';
 import WellnessScreen from '../screens/WellnessScreen';
 import HistoryScreen from '../screens/HistoryScreen';
-import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
+import WelcomeScreen from '../screens/WelcomeScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -132,8 +131,7 @@ function MainStack() {
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login"    component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
     </Stack.Navigator>
   );
 }

@@ -12,6 +12,9 @@ class UserLogin(BaseModel):
     email: str
     password: str
 
+class QuickStartRequest(BaseModel):
+    name: str
+
 class UserOut(BaseModel):
     id: int
     username: str

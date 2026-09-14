@@ -106,14 +106,14 @@ function LogoutModal({ visible, onCancel, onConfirm, username }) {
           <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={styles.glassCardBorder} />
 
-          <LinearGradient colors={colors.gradientDanger} style={styles.modalIcon}>
-            <Ionicons name="log-out-outline" size={28} color="#fff" />
+          <LinearGradient colors={colors.gradientPrimary} style={styles.modalIcon}>
+            <Ionicons name="swap-horizontal-outline" size={28} color="#fff" />
           </LinearGradient>
 
-          <Text style={styles.modalTitle}>Sign Out?</Text>
+          <Text style={styles.modalTitle}>Switch Profile?</Text>
           <Text style={styles.modalSub}>
-            You're signed in as <Text style={{ color: colors.primaryLight, fontWeight: '700' }}>{username}</Text>.{'\n'}
-            Your data is safely saved in the cloud.
+            Currently using MindGuard as <Text style={{ color: colors.primaryLight, fontWeight: '700' }}>{username}</Text>.{'\n'}
+            You can switch to another name anytime.
           </Text>
 
           <View style={styles.modalActions}>
@@ -123,9 +123,9 @@ function LogoutModal({ visible, onCancel, onConfirm, username }) {
               <Text style={styles.modalCancelText}>Stay</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={onConfirm} style={styles.modalConfirmBtn} activeOpacity={0.7}>
-              <LinearGradient colors={colors.gradientDanger} style={styles.modalConfirmGradient}>
-                <Ionicons name="log-out-outline" size={18} color="#fff" />
-                <Text style={styles.modalConfirmText}>Sign Out</Text>
+              <LinearGradient colors={colors.gradientPrimary} style={styles.modalConfirmGradient}>
+                <Ionicons name="swap-horizontal-outline" size={18} color="#fff" />
+                <Text style={styles.modalConfirmText}>Switch Name</Text>
               </LinearGradient>
             </TouchableOpacity>
           </View>

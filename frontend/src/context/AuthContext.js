@@ -75,8 +75,61 @@ export function AuthProvider({ children }) {
     await logout();
   }, [logout]);
 
+  const enterSanctuary = async (name) => {
+    const cleanName = (name || '').trim();
+    if (!cleanName) {
+      throw new Error('Please enter your name');
+    }
+
+    try {
+      const res = await authAPI.quickStart({ name: cleanName });
+      const { access_token, user: userData } = res.data;
+      await Promise.all([
+        AsyncStorage.setItem('mindguard_token', access_token),
+        AsyncStorage.setItem('mindguard_user', JSON.stringify(userData)),
+      ]);
+      setToken(access_token);
+      setUser(userData);
+      return userData;
+    } catch (err) {
+      console.log('quickStart attempt fallback...', err?.message);
+      const safeSlug = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '') || 'friend';
+      const email = `${safeSlug}@mindguard.app`;
+      const password = `mg_${safeSlug}_pass`;
+
+      try {
+        const res = await authAPI.login({ email, password });
+        const { access_token, user: userData } = res.data;
+        await Promise.all([
+          AsyncStorage.setItem('mindguard_token', access_token),
+          AsyncStorage.setItem('mindguard_user', JSON.stringify(userData)),
+        ]);
+        setToken(access_token);
+        setUser(userData);
+        return userData;
+      } catch (loginErr) {
+        try {
+          const res = await authAPI.register({ username: cleanName, email, password });
+          const { access_token, user: userData } = res.data;
+          await Promise.all([
+            AsyncStorage.setItem('mindguard_token', access_token),
+            AsyncStorage.setItem('mindguard_user', JSON.stringify(userData)),
+          ]);
+          setToken(access_token);
+          setUser(userData);
+          return userData;
+        } catch (regErr) {
+          const localUser = { id: 1, username: cleanName, email };
+          await AsyncStorage.setItem('mindguard_user', JSON.stringify(localUser));
+          setUser(localUser);
+          return localUser;
+        }
+      }
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, forceLogout }}>
+    <AuthContext.Provider value={{ user, token, loading, enterSanctuary, login, register, logout, forceLogout }}>
       {children}
     </AuthContext.Provider>
   );
