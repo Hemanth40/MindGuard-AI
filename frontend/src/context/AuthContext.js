@@ -75,14 +75,29 @@ export function AuthProvider({ children }) {
     await logout();
   }, [logout]);
 
+  const getOrCreateDeviceId = async () => {
+    try {
+      let devId = await AsyncStorage.getItem('mindguard_device_id');
+      if (!devId) {
+        devId = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 10);
+        await AsyncStorage.setItem('mindguard_device_id', devId);
+      }
+      return devId;
+    } catch (e) {
+      return 'dev_' + Date.now().toString(36);
+    }
+  };
+
   const enterSanctuary = async (name) => {
     const cleanName = (name || '').trim();
     if (!cleanName) {
       throw new Error('Please enter your name');
     }
 
+    const deviceId = await getOrCreateDeviceId();
+
     try {
-      const res = await authAPI.quickStart({ name: cleanName });
+      const res = await authAPI.quickStart({ name: cleanName, device_id: deviceId });
       const { access_token, user: userData } = res.data;
       await Promise.all([
         AsyncStorage.setItem('mindguard_token', access_token),
@@ -94,8 +109,8 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.log('quickStart attempt fallback...', err?.message);
       const safeSlug = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '') || 'friend';
-      const email = `${safeSlug}@mindguard.app`;
-      const password = `mg_${safeSlug}_pass`;
+      const email = `dev_${deviceId.slice(-12)}@mindguard.app`;
+      const password = `mg_${deviceId.slice(-12)}_pass`;
 
       try {
         const res = await authAPI.login({ email, password });

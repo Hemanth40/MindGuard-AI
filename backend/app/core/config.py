@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     # SQLite locally, PostgreSQL on Render (set via env var DATABASE_URL)
     DATABASE_URL: str = "sqlite:///./data/mindguard.db"
 
+    # Upstash Redis for caching & fast session state
+    UPSTASH_REDIS_REST_URL: str = ""
+    UPSTASH_REDIS_REST_TOKEN: str = ""
+
     class Config:
         env_file = ".env"
 

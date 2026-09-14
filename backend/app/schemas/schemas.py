@@ -14,6 +14,7 @@ class UserLogin(BaseModel):
 
 class QuickStartRequest(BaseModel):
     name: str
+    device_id: Optional[str] = None
 
 class UserOut(BaseModel):
     id: int

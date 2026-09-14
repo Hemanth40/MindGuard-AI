@@ -16,16 +16,35 @@ def quick_start(data: QuickStartRequest, db: Session = Depends(get_db)):
     if not clean_name:
         raise HTTPException(status_code=400, detail="Name cannot be empty")
 
-    user = db.query(User).filter(User.username.ilike(clean_name)).first()
-    if not user:
-        slug = re.sub(r'[^a-zA-Z0-9_]', '', clean_name.lower()) or "user"
-        email = f"{slug}@mindguard.app"
-        if db.query(User).filter(User.email == email).first():
-            email = f"{slug}_{uuid.uuid4().hex[:6]}@mindguard.app"
+    device_id = (data.device_id or "").strip()
 
+    if device_id:
+        safe_dev = re.sub(r'[^a-zA-Z0-9_-]', '', device_id)[:32]
+        device_email = f"dev_{safe_dev}@mindguard.app"
+        user = db.query(User).filter(User.email == device_email).first()
+
+        if user:
+            # Update display name if user switched/updated it on this device
+            if user.username != clean_name:
+                user.username = clean_name
+                db.commit()
+                db.refresh(user)
+        else:
+            # Create isolated user tied to this unique device
+            user = User(
+                username=clean_name,
+                email=device_email,
+                hashed_password=get_password_hash("mindguard_secure_pass")
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+    else:
+        # Fallback for client requests without a device ID
+        device_email = f"guest_{uuid.uuid4().hex[:12]}@mindguard.app"
         user = User(
             username=clean_name,
-            email=email,
+            email=device_email,
             hashed_password=get_password_hash("mindguard_secure_pass")
         )
         db.add(user)

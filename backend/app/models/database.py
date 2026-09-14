@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Text, ForeignKey, Index
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Text, ForeignKey, Index, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -29,7 +29,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     id              = Column(Integer, primary_key=True, index=True)
-    username        = Column(String, unique=True, index=True)
+    username        = Column(String, index=True)
     email           = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     created_at      = Column(DateTime, default=datetime.utcnow, index=True)
@@ -83,6 +83,14 @@ def get_db():
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("DROP INDEX IF EXISTS ix_users_username"))
+            conn.execute(text("CREATE INDEX IF NOT EXISTS ix_users_username ON users (username)"))
+            conn.commit()
+    except Exception:
+        pass
+
     # Ensure indexes are created even on existing pre-created tables
     for table in Base.metadata.tables.values():
         for index in table.indexes:
@@ -90,3 +98,4 @@ def init_db():
                 index.create(bind=engine, checkfirst=True)
             except Exception:
                 pass
+
